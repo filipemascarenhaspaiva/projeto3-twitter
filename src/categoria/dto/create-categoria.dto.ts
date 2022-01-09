@@ -7,8 +7,12 @@ export class CreateCategoriaDto {
     id: number;
   
     @IsNotEmpty()
-    @IsInt()
-    idCategoria: number;
-  nome: any;
+    @IsString()
+    nome: string;
+
+    @IsNotEmpty()
+    @IsString()
+    criado_em: string;
+    
 }
 
