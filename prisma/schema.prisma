@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Usuario {
+  id                   Int              @default(autoincrement()) @id
+  nome                 String
+  sobrenome            String
+  usuarioname             String
+  senha                String
+  sobre                String
+  aniversario           String
+  seguidores           Seguidores @relation(fields: [seguidoresid], references: [id]) 
+  seguidoresid         Int         
+  seguindo             Seguindo @relation(fields: [seguindoid], references: [id]) 
+  seguindoid           Int
+  criado_em            String  
+  modificado_em        String?
+  tweet                Tweet @relation(fields: [tweetid], references: [id])
+  tweetfavoritos       FavoritosOnUsuarios[] 
+}
+
+model Seguidores{
+  id            Int       @default(autoincrement()) @id
+  idSeguidor    Int
+  criado_em     String
+}
+
+model Seguindo{
+  id               Int       @default(autoincrement()) @id
+  idSeguindo       Int
+  criado_em        String
+}
+
+model Tweet{
+  id               Int       @default(autoincrement()) @id
+  texto            String
+  categorias       CategoriaOnTweet[]
+  usuario             Usuario @relation(fields: [usuarioid], references: [id]) 
+  usuarioid           Int
+  criado_em        String
+  usuariofavoritos FavoritosOnUsuarios[]
+
+}
+
+model Categoria{
+  id               Int       @default(autoincrement()) @id
+  nome             String
+  criado_em        String
+  tweets           CategoriaOnTweet[]  
+}
+
+model CategoriaOnTweet{
+  tweet       Tweet     @relation(fields: [tweetId], references: [id])
+  tweetId     Int // relation scalar field (used in the `@relation` attribute above)
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+  categoriaId Int // relation scalar field (used in the `@relation` attribute above)
+  criado_em   String
+
+  @@id([tweetId, categoriaId])
+}
+
+model FavoritosOnUsuarios{
+  tweet         Tweet     @relation(fields: [tweetId], references: [id])
+  tweetId       Int // relation scalar field (used in the `@relation` attribute above)
+  usuario       Usuario @relation(fields: [usuarioId], references: [id])
+  usuarioId     Int // relation scalar field (used in the `@relation` attribute above
+
+  @@id([tweetId, usuarioId])
+}
